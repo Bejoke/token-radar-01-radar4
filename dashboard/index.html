@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — which pre-token protocol launches next, and what it is worth</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div class="scope" aria-hidden="true"><span class="sweep"></span><span class="blip b1"></span><span class="blip b2"></span><span class="blip b3"></span></div>
+    <div>
+      <p class="eyebrow">Token launch radar · model radar-4 · snapshot 2026-11-14</p>
+      <h1>Which protocol launches next — and what it would be worth</h1>
+      <p class="lede">Every protocol in a sealed DefiLlama snapshot that records no token and is not a
+      wrapped, staked or bridged product of one that already trades, ranked by the implied value of
+      its launch. Each row carries a seven-step farm plan: what to do, what it costs, how long it
+      takes — plus the checkpoint that proves the position counts.</p>
+    </div>
+  </div>
+  <dl class="stats wrap" id="stats"></dl>
+</header>
+<section class="wrap movers" id="movers" aria-label="Fastest rising this week"></section>
+<nav class="tabs wrap" aria-label="Views">
+  <button type="button" data-tab="board" class="active" aria-current="page">Board</button>
+  <button type="button" data-tab="excluded">Not a launch</button>
+  <button type="button" data-tab="live">Live tokens</button>
+  <button type="button" data-tab="model">How the model works</button>
+</nav>
+<main class="wrap">
+  <section id="view-board" class="view">
+    <div class="controls" role="search">
+      <label>Search <input id="q" type="search" placeholder="name, slug or category" autocomplete="off"></label>
+      <label>Category <select id="category"><option value="">All categories</option></select></label>
+      <label>Chain <select id="chain"><option value="">All chains</option></select></label>
+      <label>TVL <select id="band">
+        <option value="">Any size</option>
+        <option value="mega">Over $1B</option>
+        <option value="large">$100M – $1B</option>
+        <option value="mid">$10M – $100M</option>
+        <option value="small">Under $10M</option>
+      </select></label>
+      <label class="check"><input id="watchlist" type="checkbox"> Watchlist only</label>
+      <label>Sort <select id="sort">
+        <option value="value">Implied value</option>
+        <option value="tvl">TVL</option>
+        <option value="growth">7-day growth</option>
+        <option value="age">Age</option>
+        <option value="name">Name</option>
+      </select></label>
+    </div>
+    <p class="count" id="count" aria-live="polite"></p>
+    <section id="detail" class="detail" hidden></section>
+    <div class="tablewrap">
+      <table id="board">
+        <thead><tr>
+          <th data-sort="value" class="num sorted">Rank</th>
+          <th data-sort="name">Protocol</th>
+          <th data-sort="category">Category</th>
+          <th>Chains</th>
+          <th data-sort="tvl" class="num">TVL</th>
+          <th data-sort="growth" class="num">7d</th>
+          <th data-sort="age" class="num">Age</th>
+          <th data-sort="value" class="num">Value</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="note">Implied value is this entry's model, not a market price and not make.fun's
+    claim. A protocol “records no token” when the snapshot records none for it — DefiLlama's
+    record is not proof it has none.</p>
+  </section>
+  <section id="view-excluded" class="view" hidden>
+    <h2>Not a launch — 144 protocols the board leaves out, and why</h2>
+    <p>These protocols record no token, but they are not launches of their own: a centralised
+    exchange, a bridge, a liquid-staking receipt, a wrapped product, a versioned pool, or a
+    product named after an exchange. The radar names the reason for each one instead of
+    silently dropping it — a board that cannot say what it left out cannot be trusted about
+    what it kept.</p>
+    <div class="tablewrap">
+      <table id="extable">
+        <thead><tr><th>Protocol</th><th>Category</th><th class="num">TVL</th><th>Why it is not a launch</th></tr></thead>
+        <tbody id="exrows"></tbody>
+      </table>
+    </div>
+  </section>
+  <section id="view-live" class="view" hidden>
+    <h2>Already trading — shown for calibration, never ranked</h2>
+    <p>These protocols already have a token that trades. Their market cap over TVL is what
+    prices the board: each category's multiple is its live-token peers' median, shrunk toward
+    the global median so a category with one or two peers does not fall off a cliff.</p>
+    <div class="tablewrap">
+      <table id="livetable">
+        <thead><tr>
+          <th>Protocol</th><th>Category</th><th class="num">TVL</th>
+          <th class="num">Market cap</th><th class="num">Mcap / TVL</th><th class="num">7d</th>
+        </tr></thead>
+        <tbody id="liverows"></tbody>
+      </table>
+    </div>
+  </section>
+  <section id="view-model" class="view" hidden>
+    <h2>How the model works</h2>
+    <p>One function scores every protocol. Nothing is hard-coded by name: the same five
+    multipliers price every row, and the category multiples and sector momentum are computed
+    from this snapshot's own live-token protocols.</p>
+    <ol class="formula">
+      <li><strong>Category multiple</strong> — the median market-cap-over-TVL of the live-token
+      protocols in the same category, shrunk toward the global median with a prior of 3 peers:
+      (n × category median + 3 × global median) / (n + 3), clamped to 0.05 – 1.00. Each peer's
+      ratio is capped at 1.00 first, so one small protocol with a huge market cap cannot set
+      its whole category.</li>
+      <li><strong>Sector momentum</strong> — 1 + 0.30 × the median 7-day TVL change of the
+      category's live-token peers, clamped to −30% … +30%.</li>
+      <li><strong>Growth</strong> — 1 + 0.55 × tanh(7-day TVL change / 60). Smooth and bounded:
+      a +4,448% week saturates instead of being clamped equal to a +100% week.</li>
+      <li><strong>Maturity</strong> — 0.55 + 0.45 × ln(1 + age in days) / ln(1 + 1460). A protocol
+      that has run longer with no token is worth more, with diminishing returns; an unknown
+      listing date counts as 180 days.</li>
+      <li><strong>Breadth</strong> — 1 + 0.05 × ln(chains), capped at 1.20.</li>
+    </ol>
+    <p class="formula-line">implied value = TVL × category × sector × growth × maturity × breadth, rounded to whole dollars.</p>
+    <h3>Peer multiples by category</h3>
+    <div class="tablewrap">
+      <table id="peertable">
+        <thead><tr><th>Category</th><th class="num">Live peers</th><th class="num">Median mcap/TVL</th><th class="num">Multiple used</th><th class="num">Sector 7d</th></tr></thead>
+        <tbody id="peerrows"></tbody>
+      </table>
+    </div>
+    <h3>What the board leaves out</h3>
+    <p>Bridges, canonical bridges, liquid staking, liquid restaking, restaked BTC and CEX
+    protocols are out: they are wrapped or staked products of a token that already trades, not
+    launches of their own. So are versioned pools (a name ending in V2, v2 or 2.0), names carrying
+    the word wrapped, staked or staking, and protocols named after an exchange. The full list,
+    with a reason for each, is on the “Not a launch” tab. The snapshot is sealed at its fetch
+    date and never moves; the board is a reading of it, not a prediction of whether or when any
+    token is issued.</p>
+  </section>
+</main>
+<footer class="wrap">
+  <p>Snapshot: DefiLlama protocols, fetched 2026-11-14, 758 protocols at or above $5M TVL.
+  Watchlist floor $50M. Built for make.fun's “Build the best token launch radar” bounty.</p>
+</footer>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
