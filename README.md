@@ -1,5 +1,9 @@
 # token-radar-01 — radar-4 variant
 
+[![make.fun · token-radar-01](https://make.fun/badge/token-radar-01.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![rank](https://make.fun/badge/token-radar-01/Bejoke/token-radar-01-radar4/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![reward](https://make.fun/badge/token-radar-01/Bejoke/token-radar-01-radar4/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+
 Token launch radar: all 198 rankable pre-token protocols ranked by implied launch value,
 each with a seven-step farm plan. Built from scratch for make.fun's “Build the best token
 launch radar” bounty, $1,325 in USDC. This is a fresh variant, parallel to the submitted
